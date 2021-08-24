@@ -1,70 +1,54 @@
-# Getting Started with Create React App
+# ASCII-Live
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+It is a demo project based upon [ANSI-art](https://github.com/EtoDemerzel0427/ANSI-art). ASCII-Live is created with ReactJS and Golang.
+It is used to transform your live video captured by a webcam into an ASCII-form to display in command line:
 
-## Available Scripts
+https://user-images.githubusercontent.com/32998901/130675904-b090e856-af42-4c07-b732-84ca9127cb14.mp4
 
-In the project directory, you can run:
+## How to run?
+I assume you already have an environment that could run ReactJS and Golang.
+If not, please refer to:
+* [Create-React-App](https://github.com/facebook/create-react-app) for React env.
+* [Golang.org](https://golang.org/) for Golang.
 
-### `npm start`
+Once you have your environment ready, first open one terminal window:
+```shell
+$ cd ascii-live
+$ go run main.go
+```
+Now you have the server running. There will not be any output till now, because we haven't
+open the webcam via a browser.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Then open another terminal window (and cd to the same folder):
+```shell
+$ npm start
+```
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+You will witness a browser running on http://localhost:3000. This webpage will open your webcam,
+and display the video live inside the browser. In the same time, you can see the ascii-live showing in the first
+terminal window.
+## How it works?
 
-### `npm test`
+ASCII-Live has Four major dependencies:
+* [React-Webcam](https://github.com/mozmorris/react-webcam).
+* [Gorilla Websocket](https://github.com/gorilla/websocket).
+* [tcell](https://github.com/gdamore/tcell).
+* [ANSI-art](https://github.com/EtoDemerzel0427/ANSI-art).
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+React-Webcam provides a convenient interface for us to utilize the web camera from a browser,
+the image data it collects is transferred to the server via a WebSocket. 
 
-### `npm run build`
+WebSocket is an upgraded HTTP protocol
+which is more suitable for long-term consistent communication, compared to the notorious long poll of HTTP. This functionality
+is offered by Gorilla WebSocket. 
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Then, as in my previous project, the image data is processed by ANSI-art to transform into ASCII
+text, which can be directly output to terminal. 
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+While it is what we did in ANSI-art, this time we utilize tcell for better terminal visualization.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Acknowledgement
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+This project is inspired by [ascii-fluid](https://github.com/esimov/ascii-fluid). What is worth noting is, during
+studying his code, I spot a memory bug in this project, and found the same codebase was reused in many projects of the author's, 
+including a 3k-star one. I think this story tells us writing WebAssembly in Golang is a bad idea 😂.
