@@ -40,18 +40,22 @@ func reader(conn *websocket.Conn) {
 			return
 		}
 
+		// todo: currently we save, but we eventually need to convert to ascii art
 		f, err := os.OpenFile("example.jpeg", os.O_WRONLY|os.O_CREATE, 0777)
 		if err != nil {
 			panic("Cannot open file")
 		}
 
-		jpeg.Encode(f, pic, nil)
+		err = jpeg.Encode(f, pic, nil)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			return
+		}
 
 		if err := conn.WriteMessage(messageType, p); err != nil {
 			log.Println(err)
 			return
 		}
-
 
 	}
 }
@@ -75,4 +79,3 @@ func SetupRoutes() {
 	// mape our `/ws` endpoint to the `serveWs` function
 	http.HandleFunc("/ws", serveWs)
 }
-
