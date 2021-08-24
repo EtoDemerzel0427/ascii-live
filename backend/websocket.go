@@ -8,7 +8,6 @@ import (
 	"image/jpeg"
 	"log"
 	"net/http"
-	"os"
 )
 
 var upgrader = websocket.Upgrader{
@@ -23,46 +22,33 @@ var upgrader = websocket.Upgrader{
 // new messages being sent to our WebSocket
 // endpoint
 func reader(conn *websocket.Conn) {
+	t := NewTerminal()
 	for {
-		// read in a message
-		messageType, p, err := conn.ReadMessage()
+		_, p, err := conn.ReadMessage()
 		if err != nil {
 			log.Println(err)
 			return
 		}
-		// print out that message for clarity
-		fmt.Println(string(p))
+
 		code := bytes.TrimPrefix(p, []byte("data:image/jpeg;base64,"))
 		unbased := base64.NewDecoder(base64.StdEncoding, bytes.NewReader(code))
 		pic, err := jpeg.Decode(unbased)
 		if err != nil {
-			fmt.Fprintln(os.Stderr, err)
 			return
 		}
 
 		// todo: currently we save, but we eventually need to convert to ascii art
-		f, err := os.OpenFile("example.jpeg", os.O_WRONLY|os.O_CREATE, 0777)
-		if err != nil {
-			panic("Cannot open file")
-		}
+		pic = t.as.TuneImage(pic)
+		t.DrawGrid(t.as.Convert(pic))
 
-		err = jpeg.Encode(f, pic, nil)
-		if err != nil {
-			fmt.Fprintln(os.Stderr, err)
-			return
-		}
 
-		if err := conn.WriteMessage(messageType, p); err != nil {
-			log.Println(err)
-			return
-		}
 
 	}
 }
 
 // define our WebSocket endpoint
 func serveWs(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(r.Host)
+	//fmt.Println(r.Host)
 
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {

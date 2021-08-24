@@ -1,7 +1,6 @@
 package backend
 
 import (
-	"bufio"
 	"fmt"
 	"github.com/EtoDemerzel0427/ANSI-art/art"
 	"github.com/disintegration/imaging"
@@ -14,18 +13,7 @@ type Terminal struct {
 	as *art.Solver
 }
 
-const (
-	canvasWidth  = 640
-	canvasHeight = 480
-)
 
-var (
-	termWidth  int
-	termHeight int
-	cellSize   int
-
-	scanner *bufio.Scanner
-)
 
 var (
 	termStyle  = tcell.StyleDefault.Foreground(tcell.ColorFloralWhite).Background(tcell.NewRGBColor(0, 23, 31))
@@ -74,9 +62,6 @@ func (t *Terminal) Debug() {
 	img, _ := imaging.Open("./example.jpeg")
 	img = t.as.TuneImage(img)
 
-	//fmt.Println(art.ClearScreen())
-	//fmt.Println(t.as.Convert(img))
-
 	t.DrawGrid(t.as.Convert(img))
-	//fmt.Println(len(t.as.Convert(img)))
+
 }
